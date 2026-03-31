@@ -3,6 +3,7 @@ package api.client;
 import api.model.User;
 import api.model.UserData;
 import io.qameta.allure.Step;
+import io.qameta.allure.restassured.AllureRestAssured;
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.filter.log.LogDetail;
 import io.restassured.http.ContentType;
@@ -22,10 +23,11 @@ public class UserClient {
                 .setBaseUri(BASE_URL)
                 .setContentType(ContentType.JSON)
                 .log(LogDetail.ALL)
+                .addFilter(new AllureRestAssured())  // Добавлен Allure-листенер
                 .build();
     }
 
-    @Step("Создание пользователя")
+    @Step("Создание пользователя с email: {user.email}")
     public ValidatableResponse createUser(User user) {
         return given()
                 .spec(getBaseSpec())
@@ -35,7 +37,7 @@ public class UserClient {
                 .then();
     }
 
-    @Step("Логин пользователя")
+    @Step("Логин пользователя с email: {credentials.email}")
     public ValidatableResponse loginUser(UserData credentials) {
         return given()
                 .spec(getBaseSpec())
